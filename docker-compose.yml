@@ -1,6 +1,9 @@
-version: '3.8'
+version: '3.9'
 
 services:
   admin_panel:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
     ports:
-      - "5173:80"
+      - 5173:5173
