@@ -1,0 +1,31 @@
+{
+  "name": "eczane-admin-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@rjsf/core": "^5.1.0",
+    "@rjsf/utils": "^5.1.0",
+    "@rjsf/validator-ajv8": "^5.1.0",
+    "daisyui": "^2.50.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-modern-drawer": "^1.2.0",
+    "react-router-dom": "^6.8.1",
+    "use-http": "^1.0.27"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.10",
+    "@vitejs/plugin-react": "^3.1.0",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.6",
+    "vite": "^4.1.0"
+  }
+}
