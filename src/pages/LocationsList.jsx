@@ -1,13 +1,12 @@
-import { useFetch } from "use-http";
-
+import { useEffect, useReducer, useState } from "react";
 import "react-modern-drawer/dist/index.css";
-import { LocationsEdit } from "../components/LocationEdit.jsx";
-import { useEffect, useReducer, useRef, useState } from "react";
-
-import cityData from "./../datasets/cityData.json";
-import { LocationAdd } from "../components/LocationAdd.jsx";
-import * as PropTypes from "prop-types";
+import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
+import { LocationAdd } from "../components/LocationAdd.jsx";
+import { LocationsEdit } from "../components/LocationEdit.jsx";
+import cityData from "./../datasets/cityData.json";
+
+
 
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
@@ -72,7 +71,7 @@ export const LocationFilters = ({ dispatchFilters }) => {
   const [district, setDistrict] = useState(null);
 
   return (
-    <div className={"flex gap-4 basis-1/3"}>
+    <div className={"flex gap-4 basis-1/3 my-4 md:my-0"}>
       <div className="flex bg-gray-100 w-full">
         <select className="bg-gray-100 p-4 font-bold w-full" id="city"
                 onChange={(e) => {
@@ -173,7 +172,7 @@ export const LocationsList = () => {
 
   return (
     <div className={"container"}>
-      <div className={"flex justify-between my-6"}>
+      <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>
             Lokasyonlar
