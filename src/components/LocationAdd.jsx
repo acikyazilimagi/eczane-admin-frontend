@@ -118,8 +118,8 @@ export function LocationAdd () {
                 Şehir
               </option>
               {
-                cityData.map((item, index) => (
-                  <option value={item.id} key={index}
+                cityData.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.cityId ===
                             item.id}>{item.key}
                   </option>
@@ -141,8 +141,8 @@ export function LocationAdd () {
               formData.cityId &&
               cityData.find(item => item.id === Number(formData.cityId))?.
                 districts.
-                map((item, index) => (
-                  <option value={item.id} key={index}
+                map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.districtId ===
                             item.id}>{item.key}</option>
                 ))
@@ -167,8 +167,8 @@ export function LocationAdd () {
                 Tip
               </option>
               {
-                typeOptions.map((item, index) => (
-                  <option value={item.id} key={index}
+                typeOptions.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.typeId ===
                             item.id}>{item.name}</option>
                 ))
@@ -186,8 +186,8 @@ export function LocationAdd () {
                 formData.typeId &&
                 subTypeOptions.filter(
                   item => item.typeId === Number(formData.typeId)).
-                  map((item, index) => (
-                    <option value={item.id} key={index}
+                  map((item) => (
+                    <option value={item.id} key={item.id}
                             selected={formData.subTypeId === item.id}>
                       {item.name}
                     </option>
