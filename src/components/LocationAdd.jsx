@@ -112,12 +112,12 @@ export function LocationAdd () {
                    onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="address">Adres: </Label>
+            <Label htmlFor="address">Açık Adres: </Label>
             <Input type="text" id="address" name="address"
                    value={formData.address} onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="addressDetails">Adres Detayları:</Label>
+            <Label htmlFor="addressDetails">Adres Tarifi:</Label>
             <Input type="text" id="addressDetails" name="addressDetails"
                    value={formData.addressDetails}
                    onChange={handleInputChange}/>

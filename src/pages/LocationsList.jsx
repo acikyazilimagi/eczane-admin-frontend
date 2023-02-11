@@ -13,7 +13,7 @@ const LocationsTableCell = ({ children }) => (
   <td className={"px-6 py-4"}>{children}</td>);
 
 function LocationsTableRow ({ item }) {
-  const { id, name, address, phone } = item;
+  const { id, name, address, phone, additionalAddressDetails } = item;
   const { delete: deleteLocation, get } = useFetch("");
 
   async function handleDelete() {
@@ -35,6 +35,7 @@ function LocationsTableRow ({ item }) {
       <LocationsTableCell>{id}</LocationsTableCell>
       <LocationsTableCell>{name}</LocationsTableCell>
       <LocationsTableCell>{address}</LocationsTableCell>
+      <LocationsTableCell>{additionalAddressDetails}</LocationsTableCell>
       <LocationsTableCell>{phone}</LocationsTableCell>
       <LocationsTableCell>
         <LocationActions/>
@@ -51,7 +52,8 @@ function LocationsTable ({ data }) {
         <tr>
           <LocationsTableHeaderCell>ID</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Ad</LocationsTableHeaderCell>
-          <LocationsTableHeaderCell>Adres</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Açık Adres</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Adres Tarifi</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Telefon</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Aksiyonlar</LocationsTableHeaderCell>
         </tr>
@@ -136,7 +138,7 @@ export const LocationsList = () => {
 
 
   const cityFilteredData = data?.data?.filter(item => !filters.city || item.cityId === filters.city)
-  
+
   const districtFilteredData = cityFilteredData?.filter(
     item => !filters.district || item.districtId === filters.district
   )
