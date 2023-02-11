@@ -7,6 +7,6 @@ export default defineConfig({
   server: {
     host: true, // needed for the Docker Container port mapping to work
     strictPort: true,
-    port: 80,
+    port: 5173,
   },
 });
