@@ -1,5 +1,4 @@
 import { useReducer, useState } from "react";
-
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
@@ -7,25 +6,26 @@ import { LocationAdd } from "../components/LocationAdd.jsx";
 import { LocationsEdit } from "../components/LocationEdit.jsx";
 import cityData from "./../datasets/cityData.json";
 
+
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
 const LocationsTableCell = ({ children }) => (
   <td className={"px-6 py-4"}>{children}</td>);
 
-function LocationsTableRow ({ item, refresh }) {
-  const { id, name, address, phone } = item;
-  const { delete: deleteLocation } = useFetch("");
+function LocationsTableRow ({ item }) {
+  const { id, name, address, phone, additionalAddressDetails } = item;
+  const { delete: deleteLocation, get } = useFetch("");
 
   async function handleDelete() {
     const areYouSure = confirm("Silmek istediğinize emin misiniz?");
     if (areYouSure) {
       await deleteLocation(`location/${id}`);
-      refresh();
+      get(getDateQuery);
     }
   }
 
   const LocationActions = () => (<div className={"flex gap-12"}>
-    <LocationsEdit item={item} refresh={refresh}/>
+    <LocationsEdit item={item} />
     <button className={"text-red-500"} onClick={handleDelete}>Sil</button>
   </div>);
 
@@ -35,6 +35,7 @@ function LocationsTableRow ({ item, refresh }) {
       <LocationsTableCell>{id}</LocationsTableCell>
       <LocationsTableCell>{name}</LocationsTableCell>
       <LocationsTableCell>{address}</LocationsTableCell>
+      <LocationsTableCell>{additionalAddressDetails}</LocationsTableCell>
       <LocationsTableCell>{phone}</LocationsTableCell>
       <LocationsTableCell>
         <LocationActions/>
@@ -43,7 +44,7 @@ function LocationsTableRow ({ item, refresh }) {
   );
 }
 
-function LocationsTable ({ data, refresh }) {
+function LocationsTable ({ data }) {
   return (
     <div className={"relative overflow-x-auto shadow-sm sm:rounded-lg"}>
       <table className="w-full text-sm text-left ">
@@ -51,14 +52,15 @@ function LocationsTable ({ data, refresh }) {
         <tr>
           <LocationsTableHeaderCell>ID</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Ad</LocationsTableHeaderCell>
-          <LocationsTableHeaderCell>Adres</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Açık Adres</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Adres Tarifi</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Telefon</LocationsTableHeaderCell>
           <LocationsTableHeaderCell>Aksiyonlar</LocationsTableHeaderCell>
         </tr>
         </thead>
         <tbody>
         {data.map(
-          (item, index) => (<LocationsTableRow item={item} key={index} refresh={refresh}/>))}
+          (item) => (<LocationsTableRow item={item} key={item.id} />))}
         </tbody>
       </table>
     </div>
@@ -81,8 +83,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
                 }}>
           <option value="" selected={city === null}>Şehir</option>
           {
-            cityData.map((item, index) => (
-              <option value={item.id} key={index}
+            cityData.map((item) => (
+              <option value={item.id} key={item.id}
                       selected={city === item.id}>{item.key}</option>
             ))
           }
@@ -97,8 +99,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
           <option value="" selected={district === null}>İlçe</option>
           {
             city && cityData.find(item => item.id === city)?.districts.map(
-              (item, index) => (
-                <option value={item.id} key={index}
+              (item) => (
+                <option value={item.id} key={item.id}
                         selected={district === item.id}>{item.key}</option>
               ))
           }
@@ -132,21 +134,18 @@ export const LocationsList = () => {
   const [filters, dispatchFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }), {});
 
-  const { get, data, loading, error } = useFetch("/", {}, []);
+  const { data, loading } = useFetch("/", {}, []);
 
 
   const cityFilteredData = data?.data?.filter(item => !filters.city || item.cityId === filters.city)
-  
+
   const districtFilteredData = cityFilteredData?.filter(
     item => !filters.district || item.districtId === filters.district
   )
-  
-  const refresh = async () => {
-    const refreshResult = await get("?" + Date.now());
-    console.log({ refreshResult });
-  };
 
   console.log(data)
+
+  const sortedData = districtFilteredData?.sort((a, b) => a.id - b.id);
 
   return (
     <div className={"container"}>
@@ -156,7 +155,7 @@ export const LocationsList = () => {
             Lokasyonlar
           </h1>
 
-          <LocationAdd refresh={refresh}/>
+          <LocationAdd/>
         </div>
 
         <LocationFilters dispatchFilters={dispatchFilters}/>
@@ -164,11 +163,11 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {districtFilteredData && <LocationsTable data={districtFilteredData} refresh={refresh}/>}
+      {sortedData && <LocationsTable data={sortedData} />}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
-        {districtFilteredData && districtFilteredData.length} kayıt bulundu.
+        {sortedData && sortedData.length} kayıt bulundu.
       </div>
     </div>
   );

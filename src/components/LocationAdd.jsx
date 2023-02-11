@@ -6,9 +6,10 @@ import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
+import { getDateQuery } from "../utils.js";
 
-export function LocationAdd ({refresh}) {
-  const { data, post, response, loading } = useFetch("/");
+export function LocationAdd () {
+  const { data, post, response, loading, get } = useFetch("/");
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -16,7 +17,20 @@ export function LocationAdd ({refresh}) {
     setIsOpen((prevState) => !prevState);
   };
 
-  const [formData, setFormData] = useState({});
+  const initialFormData = {
+    name: "",
+    phone: "",
+    address: "",
+    addressDetails: "",
+    latitude: "",
+    longitude: "",
+    cityId: null,
+    districtId: null,
+    typeId: null,
+    subTypeId: null,
+  }
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -49,8 +63,10 @@ export function LocationAdd ({refresh}) {
       if (newLocation.ok) {
         console.log("New location added")
 
+        setFormData(initialFormData)
+
         setTimeout(() => {
-          refresh()
+          get(getDateQuery())
           toggleDrawer()
         }, 300)
       }
@@ -96,12 +112,12 @@ export function LocationAdd ({refresh}) {
                    onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="address">Adres: </Label>
+            <Label htmlFor="address">Açık Adres: </Label>
             <Input type="text" id="address" name="address"
                    value={formData.address} onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="addressDetails">Adres Detayları:</Label>
+            <Label htmlFor="addressDetails">Adres Tarifi:</Label>
             <Input type="text" id="addressDetails" name="addressDetails"
                    value={formData.addressDetails}
                    onChange={handleInputChange}/>
@@ -118,8 +134,8 @@ export function LocationAdd ({refresh}) {
                 Şehir
               </option>
               {
-                cityData.map((item, index) => (
-                  <option value={item.id} key={index}
+                cityData.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.cityId ===
                             item.id}>{item.key}
                   </option>
@@ -141,8 +157,8 @@ export function LocationAdd ({refresh}) {
               formData.cityId &&
               cityData.find(item => item.id === Number(formData.cityId))?.
                 districts.
-                map((item, index) => (
-                  <option value={item.id} key={index}
+                map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.districtId ===
                             item.id}>{item.key}</option>
                 ))
@@ -164,11 +180,11 @@ export function LocationAdd ({refresh}) {
             <Select name={"typeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Tip
+                Lütfen seçiniz
               </option>
               {
-                typeOptions.map((item, index) => (
-                  <option value={item.id} key={index}
+                typeOptions.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.typeId ===
                             item.id}>{item.name}</option>
                 ))
@@ -180,14 +196,14 @@ export function LocationAdd ({refresh}) {
             <Select name={"subTypeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Alt Tip
+                Lütfen seçiniz
               </option>
               {
                 formData.typeId &&
                 subTypeOptions.filter(
                   item => item.typeId === Number(formData.typeId)).
-                  map((item, index) => (
-                    <option value={item.id} key={index}
+                  map((item) => (
+                    <option value={item.id} key={item.id}
                             selected={formData.subTypeId === item.id}>
                       {item.name}
                     </option>

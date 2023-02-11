@@ -2,13 +2,14 @@ import { useState } from "react";
 import Drawer from "react-modern-drawer";
 import { useFetch } from "use-http";
 import cityData from "../datasets/cityData.json";
+import { getDateQuery } from "../utils";
 import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
 
-export function LocationsEdit ({ item, refresh }) {
-  const { data, post, response, loading } = useFetch("");
+export function LocationsEdit ({ item }) {
+  const { data, post, response, loading, get } = useFetch("");
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
@@ -81,7 +82,7 @@ export function LocationsEdit ({ item, refresh }) {
         console.log("Updated");
 
         setTimeout(() => {
-          refresh();
+          get(getDateQuery);
           toggleDrawer();
         }, 300);
       }
@@ -124,12 +125,12 @@ export function LocationsEdit ({ item, refresh }) {
                    onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="address">Adres: </Label>
+            <Label htmlFor="address">Açık Adres: </Label>
             <Input type="text" id="address" name="address"
                    value={formData.address} onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="additionalAddressDetails">Adres Detayları:</Label>
+            <Label htmlFor="additionalAddressDetails">Adres Tarifi:</Label>
             <Input type="text" id="additionalAddressDetails"
                    name="additionalAddressDetails"
                    value={formData.additionalAddressDetails}
@@ -147,8 +148,8 @@ export function LocationsEdit ({ item, refresh }) {
                 Şehir
               </option>
               {
-                cityData.map((item, index) => (
-                  <option value={item.id} key={index}
+                cityData.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.cityId ===
                             item.id}>{item.key}
                   </option>
@@ -170,8 +171,8 @@ export function LocationsEdit ({ item, refresh }) {
               formData.cityId &&
               cityData.find(item => item.id === Number(formData.cityId))?.
                 districts.
-                map((item, index) => (
-                  <option value={item.id} key={index}
+                map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.districtId ===
                             item.id}>{item.key}</option>
                 ))
@@ -196,8 +197,8 @@ export function LocationsEdit ({ item, refresh }) {
                 Lütfen Seçiniz
               </option>
               {
-                typeOptions.map((item, index) => (
-                  <option value={item.id} key={index}
+                typeOptions.map((item) => (
+                  <option value={item.id} key={item.id}
                           selected={formData.typeId ===
                             item.id}>{item.name}</option>
                 ))
@@ -215,8 +216,8 @@ export function LocationsEdit ({ item, refresh }) {
                 formData.typeId &&
                 subTypeOptions.filter(
                   item => item.typeId === Number(formData.typeId)).
-                  map((item, index) => (
-                    <option value={item.id} key={index}
+                  map((item) => (
+                    <option value={item.id} key={item.id}
                             selected={formData.subTypeId === item.id}>
                       {item.name}
                     </option>
