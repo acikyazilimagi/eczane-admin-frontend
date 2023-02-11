@@ -181,7 +181,6 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {districtFilteredData && <LocationsTable data={districtFilteredData}/>}
       {filteredData && <LocationsTable data={filteredData} />}
       {loading && <div>Loading...</div>}
 
