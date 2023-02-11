@@ -1,33 +1,31 @@
-import { useFetch } from "use-http";
-
+import { useEffect, useReducer, useState } from "react";
 import "react-modern-drawer/dist/index.css";
-import { LocationsEdit } from "../components/LocationEdit.jsx";
-import { useEffect, useReducer, useRef, useState } from "react";
-
-import cityData from "./../datasets/cityData.json";
-import { LocationAdd } from "../components/LocationAdd.jsx";
-import * as PropTypes from "prop-types";
+import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
+import { LocationAdd } from "../components/LocationAdd.jsx";
+import { LocationsEdit } from "../components/LocationEdit.jsx";
+import { getDateQuery } from "../utils.js";
+import cityData from "./../datasets/cityData.json";
 
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
 const LocationsTableCell = ({ children }) => (
   <td className={"px-6 py-4"}>{children}</td>);
 
-function LocationsTableRow ({ item, refresh }) {
+function LocationsTableRow ({ item }) {
   const { id, name, address, phone } = item;
-  const { delete: deleteLocation } = useFetch("");
+  const { delete: deleteLocation, get } = useFetch("");
 
   async function handleDelete() {
     const areYouSure = confirm("Silmek istediğinize emin misiniz?");
     if (areYouSure) {
       await deleteLocation(`location/${id}`);
-      refresh();
+      get(getDateQuery);
     }
   }
 
   const LocationActions = () => (<div className={"flex gap-12"}>
-    <LocationsEdit item={item} refresh={refresh}/>
+    <LocationsEdit item={item} />
     <button className={"text-red-500"} onClick={handleDelete}>Sil</button>
   </div>);
 
@@ -45,7 +43,7 @@ function LocationsTableRow ({ item, refresh }) {
   );
 }
 
-function LocationsTable ({ data, refresh }) {
+function LocationsTable ({ data }) {
   return (
     <div className={"relative overflow-x-auto shadow-sm sm:rounded-lg"}>
       <table className="w-full text-sm text-left ">
@@ -60,7 +58,7 @@ function LocationsTable ({ data, refresh }) {
         </thead>
         <tbody>
         {data.map(
-          (item, index) => (<LocationsTableRow item={item} key={index} refresh={refresh}/>))}
+          (item, index) => (<LocationsTableRow item={item} key={index} />))}
         </tbody>
       </table>
     </div>
@@ -164,10 +162,6 @@ export const LocationsList = () => {
     setFilteredData(filteredData);
   }, [filters]);
 
-  const refresh = async () => {
-    const refreshResult = await get("?" + Date.now());
-    console.log({ refreshResult });
-  };
 
   console.log(data)
 
@@ -179,7 +173,7 @@ export const LocationsList = () => {
             Lokasyonlar
           </h1>
 
-          <LocationAdd refresh={refresh}/>
+          <LocationAdd/>
         </div>
 
         <LocationFilters dispatchFilters={dispatchFilters}/>
@@ -187,7 +181,8 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {filteredData && <LocationsTable data={filteredData} refresh={refresh}/>}
+      {districtFilteredData && <LocationsTable data={districtFilteredData}/>}
+      {filteredData && <LocationsTable data={filteredData} />}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>

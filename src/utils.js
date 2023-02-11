@@ -1,0 +1,1 @@
+export const getDateQuery = () => "?" + Date.now()
