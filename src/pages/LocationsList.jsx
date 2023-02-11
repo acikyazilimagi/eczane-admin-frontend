@@ -1,5 +1,4 @@
 import { useReducer, useState } from "react";
-
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
@@ -58,7 +57,7 @@ function LocationsTable ({ data, refresh }) {
         </thead>
         <tbody>
         {data.map(
-          (item, index) => (<LocationsTableRow item={item} key={index} refresh={refresh}/>))}
+          (item) => (<LocationsTableRow item={item} key={item.id} refresh={refresh}/>))}
         </tbody>
       </table>
     </div>
@@ -81,8 +80,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
                 }}>
           <option value="" selected={city === null}>Şehir</option>
           {
-            cityData.map((item, index) => (
-              <option value={item.id} key={index}
+            cityData.map((item) => (
+              <option value={item.id} key={item.id}
                       selected={city === item.id}>{item.key}</option>
             ))
           }
@@ -97,8 +96,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
           <option value="" selected={district === null}>İlçe</option>
           {
             city && cityData.find(item => item.id === city)?.districts.map(
-              (item, index) => (
-                <option value={item.id} key={index}
+              (item) => (
+                <option value={item.id} key={item.id}
                         selected={district === item.id}>{item.key}</option>
               ))
           }
