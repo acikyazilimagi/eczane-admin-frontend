@@ -1,10 +1,10 @@
-import { useEffect, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
+
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
 import { LocationAdd } from "../components/LocationAdd.jsx";
 import { LocationsEdit } from "../components/LocationEdit.jsx";
-import { getDateQuery } from "../utils.js";
 import cityData from "./../datasets/cityData.json";
 
 const LocationsTableHeaderCell = ({ children }) => (
@@ -70,7 +70,7 @@ export const LocationFilters = ({ dispatchFilters }) => {
   const [district, setDistrict] = useState(null);
 
   return (
-    <div className={"flex gap-4 basis-1/3"}>
+    <div className={"flex gap-4 basis-1/3 my-4 md:my-0"}>
       <div className="flex bg-gray-100 w-full">
         <select className="bg-gray-100 p-4 font-bold w-full" id="city"
                 onChange={(e) => {
@@ -113,12 +113,12 @@ function Token () {
 
   return (
     <div className="gap-x-4">
-      <Input placeholder={"ADMIN"} className={"mb-6 w-64"}
+      <Input placeholder={"ADMIN"} className={"mb-2 w-64"}
       value={token} onChange={(e) => {
         setToken(e.target.value)
       }}/>
 
-      <button className={"bg-blue-500 p-2 ml-4 text-white rounded-lg"}
+      <button className={"bg-blue-500 py-2 px-4 text-white rounded-lg mb-6"}
               onClick={() => {
                 localStorage.setItem('token', token)
               }}>
@@ -134,40 +134,23 @@ export const LocationsList = () => {
 
   const { get, data, loading, error } = useFetch("/", {}, []);
 
-  const [filteredData, setFilteredData] = useState([]);
 
-  useEffect(() => {
-    if (data?.data) {
-      setFilteredData(data.data);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    let filteredData = data?.data;
-
-    if (filters.city) {
-      setFilteredData(
-        filteredData = filteredData.filter(
-          item => item.cityId === filters.city),
-      );
-    }
-
-    if (filters.district) {
-      setFilteredData(
-        filteredData = filteredData.filter(
-          item => item.districtId === filters.district),
-      );
-    }
-
-    setFilteredData(filteredData);
-  }, [filters]);
-
+  const cityFilteredData = data?.data?.filter(item => !filters.city || item.cityId === filters.city)
+  
+  const districtFilteredData = cityFilteredData?.filter(
+    item => !filters.district || item.districtId === filters.district
+  )
+  
+  const refresh = async () => {
+    const refreshResult = await get("?" + Date.now());
+    console.log({ refreshResult });
+  };
 
   console.log(data)
 
   return (
     <div className={"container"}>
-      <div className={"flex justify-between my-6"}>
+      <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>
             Lokasyonlar
@@ -181,11 +164,11 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {filteredData && <LocationsTable data={filteredData} />}
+      {districtFilteredData && <LocationsTable data={districtFilteredData} refresh={refresh}/>}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
-        {filteredData && filteredData.length} kayıt bulundu.
+        {districtFilteredData && districtFilteredData.length} kayıt bulundu.
       </div>
     </div>
   );

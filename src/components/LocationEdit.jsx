@@ -106,7 +106,7 @@ export function LocationsEdit ({ item }) {
         open={isOpen}
         onClose={toggleDrawer}
         direction="right"
-        size={"50vw"}
+        className="!w-[80vw] md:!w-[50vw]"
         duration={200}
       >
         <div className={"flex justify-between px-8 my-8"}>
