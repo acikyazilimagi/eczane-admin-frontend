@@ -1,20 +1,15 @@
 import { useState } from "react";
 import Drawer from "react-modern-drawer";
 import cityData from "../datasets/cityData.json";
+import { Select } from "./Select.jsx";
+import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
+import { useFetch } from "use-http";
+import { Input } from "./Input.jsx";
+import { Label } from "./Label.jsx";
 
-const Input = ({ ...props }) => (
-  <input {...props}
-         className={"shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"}/>
-);
+export function LocationsEdit ({ item, refresh }) {
+  const { data, post, response, loading } = useFetch("");
 
-const Label = ({ children, className, ...props }) => (
-  <label className={"block text-gray-700 text-sm font-bold mt-4 mb-2 " +
-    className} {...props}>
-    {children}
-  </label>
-);
-
-export function LocationsEdit ({ item }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -24,12 +19,78 @@ export function LocationsEdit ({ item }) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+    if (name === "cityId") {
+      setFormData({ ...formData, cityId: Number(value), districtId: null });
+      return;
+    }
+
+    if (name === "typeId") {
+      setFormData({ ...formData, typeId: Number(value), subTypeId: null });
+      return;
+    }
+
+    let integerFields = [
+      "districtId",
+      "typeId",
+      "subTypeId",
+    ];
+
+    if (integerFields.includes(name)) {
+      setFormData({ ...formData, [name]: Number(value) });
+      return;
+    }
+
+    if (name === "additionalAddressDetails") {
+      setFormData({ ...formData, [name]: value, addressDetails: value });
+      return;
+    }
+
     setFormData({ ...formData, [name]: value });
   };
 
+  async function updateLocation () {
+    // Filter form data by fields
+    const fields = [
+      "name",
+      "phone",
+      "address",
+      "additionalAddressDetails",
+      "cityId",
+      "districtId",
+      "typeId",
+      "subTypeId",
+      "latitude",
+      "longitude",
+    ];
+
+    if (!(formData.typeId && formData.subTypeId && formData.cityId && formData.districtId)) {
+      alert ('Lütfen tüm alanları doldurunuz')
+      return
+    }
+
+    let filteredFormData = Object.entries(formData).
+      filter(([key, value]) => fields.includes(key));
+
+    const updateLocationResponse = await post(`/location/${item.id}`,
+      { location: Object.fromEntries(filteredFormData) });
+    console.log({ response, updateLocationResponse });
+
+    if (response.ok) {
+      if (updateLocationResponse.ok) {
+        console.log("Updated");
+
+        setTimeout(() => {
+          refresh();
+          toggleDrawer();
+        }, 300);
+      }
+    }
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
+    updateLocation();
   };
 
   return (
@@ -51,7 +112,7 @@ export function LocationsEdit ({ item }) {
           <h2 className={"text-2xl font-bold"}>Lokasyon Düzenle</h2>
         </div>
 
-        <form onSubmit={handleSubmit} className={'px-8'}>
+        <form onSubmit={handleSubmit} className={"px-8"}>
           <div>
             <Label htmlFor="name">Ad: </Label>
             <Input type="text" id="name" name="name" value={formData.name}
@@ -68,44 +129,55 @@ export function LocationsEdit ({ item }) {
                    value={formData.address} onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="addressDetails">Adres Detayları:</Label>
-            <Input type="text" id="addressDetails" name="addressDetails"
-                   value={formData.addressDetails}
+            <Label htmlFor="additionalAddressDetails">Adres Detayları:</Label>
+            <Input type="text" id="additionalAddressDetails"
+                   name="additionalAddressDetails"
+                   value={formData.additionalAddressDetails}
                    onChange={handleInputChange}/>
           </div>
           <div>
             <Label htmlFor="cityId">Şehir:</Label>
 
-            <div className="inline-block relative w-64">
-              <select
-                className="block appearance-none w-full bg-white border hover:border-gray-500 px-4 py-2 pr-8 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
-                id="city-edit"
-                      onChange={(e) => {
-                        handleInputChange(e)
-                      }}>
-                <option value="" selected={formData.cityId === null}>Şehir</option>
-                {
-                  cityData.map((item, index) => (
-                    <option value={item.id} key={index}
-                            selected={formData.cityId === item.id}>{item.key}</option>
-                  ))
-                }
-              </select>
-              <div
-                className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg className="fill-current h-4 w-4"
-                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                  <path
-                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                </svg>
-              </div>
-            </div>
+            <Select
+              id="cityId" name={"cityId"}
+              onChange={(e) => {
+                handleInputChange(e);
+              }}>
+              <option value="" selected={formData.cityId === null}>
+                Şehir
+              </option>
+              {
+                cityData.map((item, index) => (
+                  <option value={item.id} key={index}
+                          selected={formData.cityId ===
+                            item.id}>{item.key}
+                  </option>
+                ))
+              }
+            </Select>
           </div>
-          <div>
-            <Label htmlFor="districtId">İlçe:</Label>
-            <Input type="text" id="districtId" name="districtId"
-                   value={formData.districtId} onChange={handleInputChange}/>
-          </div>
+
+          <Label htmlFor="districtId">İlçe:</Label>
+
+          <Select id="districtId" name={"districtId"}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                  }}>
+            <option value="" selected={formData.districtId === null}>
+              İlçe
+            </option>
+            {
+              formData.cityId &&
+              cityData.find(item => item.id === Number(formData.cityId))?.
+                districts.
+                map((item, index) => (
+                  <option value={item.id} key={index}
+                          selected={formData.districtId ===
+                            item.id}>{item.key}</option>
+                ))
+            }
+          </Select>
+
           <div>
             <Label htmlFor="latitude">Latitude:</Label>
             <Input type="text" id="latitude" name="latitude"
@@ -118,18 +190,49 @@ export function LocationsEdit ({ item }) {
           </div>
           <div>
             <Label htmlFor="typeId">Tip:</Label>
-            <Input type="text" id="typeId" name="typeId"
-                   value={formData.typeId} onChange={handleInputChange}/>
+            <Select name={"typeId"}
+                    onChange={handleInputChange}>
+              <option value="" selected={formData.type === null}>
+                Lütfen Seçiniz
+              </option>
+              {
+                typeOptions.map((item, index) => (
+                  <option value={item.id} key={index}
+                          selected={formData.typeId ===
+                            item.id}>{item.name}</option>
+                ))
+              }
+            </Select>
           </div>
           <div>
             <Label htmlFor="subTypeId">Alt tip:</Label>
-            <Input type="text" id="subTypeId" name="subTypeId"
-                   value={formData.subTypeId} onChange={handleInputChange}/>
+            <Select name={"subTypeId"}
+                    onChange={handleInputChange}>
+              <option value="" selected={formData.type === null}>
+                Lütfen Seçiniz
+              </option>
+              {
+                formData.typeId &&
+                subTypeOptions.filter(
+                  item => item.typeId === Number(formData.typeId)).
+                  map((item, index) => (
+                    <option value={item.id} key={index}
+                            selected={formData.subTypeId === item.id}>
+                      {item.name}
+                    </option>
+                  ))
+              }
+            </Select>
           </div>
-
-          <button type="submit" className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4'}>
-            Submit
+          <button type="submit"
+                  className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"}>
+            Güncelle
           </button>
+          {loading && <p>Güncelleniyor...</p>}
+          {
+            response?.ok && data?.ok &&
+            <div className={"mt-4 text-lg"}>Güncelleme başarılı</div>
+          }
         </form>
       </Drawer>
     </>

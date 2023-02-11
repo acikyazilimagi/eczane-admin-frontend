@@ -1,67 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Drawer from "react-modern-drawer";
 import cityData from "../datasets/cityData.json";
 import { Select } from "./Select.jsx";
 import { useFetch } from "use-http";
-
-const Input = ({ ...props }) => (
-  <input className={"shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"}
-         {...props}/>
-);
-
-const Label = ({ children, className, ...props }) => (
-  <label className={"block text-gray-700 text-sm font-bold mt-4 mb-2 " +
-    className} {...props}>
-    {children}
-  </label>
-);
-
-const typeOptions = [
-  {
-    "id": 1,
-    "name": "Hastane",
-  },
-  {
-    "id": 2,
-    "name": "Eczane",
-  },
-];
-
-const subTypeOptions = [
-  {
-    "id": 1,
-    "name": "Acil",
-    "typeId": 1,
-  },
-  {
-    "id": 2,
-    "name": "Genel",
-    "typeId": 1,
-  },
-  {
-    "id": 3,
-    "name": "Acil",
-    "typeId": 2,
-  },
-  {
-    "id": 4,
-    "name": "Genel",
-    "typeId": 2,
-  },
-  {
-    "id": 5,
-    "name": "Sahra Hastanesi",
-    "typeId": 1,
-  },
-  {
-    "id": 6,
-    "name": "Sahra Eczanesi",
-    "typeId": 2,
-  },
-];
+import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
+import { Input } from "./Input.jsx";
+import { Label } from "./Label.jsx";
 
 export function LocationAdd ({refresh}) {
-  const { data, post, response, loading } = useFetch("/api");
+  const { data, post, response, loading } = useFetch("/");
 
   const [isOpen, setIsOpen] = useState(false);
 

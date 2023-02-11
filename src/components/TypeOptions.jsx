@@ -1,0 +1,43 @@
+export const typeOptions = [
+  {
+    "id": 1,
+    "name": "Hastane",
+  },
+  {
+    "id": 2,
+    "name": "Eczane",
+  },
+];
+
+export const subTypeOptions = [
+  {
+    "id": 1,
+    "name": "Acil",
+    "typeId": 1,
+  },
+  {
+    "id": 2,
+    "name": "Genel",
+    "typeId": 1,
+  },
+  {
+    "id": 3,
+    "name": "Acil",
+    "typeId": 2,
+  },
+  {
+    "id": 4,
+    "name": "Genel",
+    "typeId": 2,
+  },
+  {
+    "id": 5,
+    "name": "Sahra Hastanesi",
+    "typeId": 1,
+  },
+  {
+    "id": 6,
+    "name": "Sahra Eczanesi",
+    "typeId": 2,
+  },
+];

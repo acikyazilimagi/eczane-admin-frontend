@@ -2,21 +2,33 @@ import { useFetch } from "use-http";
 
 import "react-modern-drawer/dist/index.css";
 import { LocationsEdit } from "../components/LocationEdit.jsx";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 import cityData from "./../datasets/cityData.json";
 import { LocationAdd } from "../components/LocationAdd.jsx";
+import * as PropTypes from "prop-types";
+import { Input } from "../components/Input.jsx";
 
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
 const LocationsTableCell = ({ children }) => (
   <td className={"px-6 py-4"}>{children}</td>);
 
-function LocationsTableRow ({ item }) {
+function LocationsTableRow ({ item, refresh }) {
   const { id, name, address, phone } = item;
+  const { delete: deleteLocation } = useFetch("");
+
+  async function handleDelete() {
+    const areYouSure = confirm("Silmek istediğinize emin misiniz?");
+    if (areYouSure) {
+      await deleteLocation(`location/${id}`);
+      refresh();
+    }
+  }
+
   const LocationActions = () => (<div className={"flex gap-12"}>
-    <LocationsEdit item={item}/>
-    <button className={"text-red-500"}>Sil</button>
+    <LocationsEdit item={item} refresh={refresh}/>
+    <button className={"text-red-500"} onClick={handleDelete}>Sil</button>
   </div>);
 
   return (
@@ -33,7 +45,7 @@ function LocationsTableRow ({ item }) {
   );
 }
 
-function LocationsTable ({ data }) {
+function LocationsTable ({ data, refresh }) {
   return (
     <div className={"relative overflow-x-auto shadow-sm sm:rounded-lg"}>
       <table className="w-full text-sm text-left ">
@@ -48,7 +60,7 @@ function LocationsTable ({ data }) {
         </thead>
         <tbody>
         {data.map(
-          (item, index) => (<LocationsTableRow item={item} key={index}/>))}
+          (item, index) => (<LocationsTableRow item={item} key={index} refresh={refresh}/>))}
         </tbody>
       </table>
     </div>
@@ -98,11 +110,31 @@ export const LocationFilters = ({ dispatchFilters }) => {
   );
 };
 
+function Token () {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  return (
+    <div className="gap-x-4">
+      <Input placeholder={"ADMIN"} className={"mb-6 w-64"}
+      value={token} onChange={(e) => {
+        setToken(e.target.value)
+      }}/>
+
+      <button className={"bg-blue-500 p-2 ml-4 text-white rounded-lg"}
+              onClick={() => {
+                localStorage.setItem('token', token)
+              }}>
+        Kaydet
+      </button>
+    </div>
+  )
+}
+
 export const LocationsList = () => {
   const [filters, dispatchFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }), {});
 
-  const { get, data, loading, error } = useFetch("/api", {}, []);
+  const { get, data, loading, error } = useFetch("/", {}, []);
 
   const [filteredData, setFilteredData] = useState([]);
 
@@ -133,13 +165,15 @@ export const LocationsList = () => {
   }, [filters]);
 
   const refresh = async () => {
-    const refreshResult = await get('?' + Date.now());
-    console.log({ refreshResult })
-  }
+    const refreshResult = await get("?" + Date.now());
+    console.log({ refreshResult });
+  };
+
+  console.log(data)
 
   return (
     <div className={"container"}>
-      <div className={"flex justify-between my-12"}>
+      <div className={"flex justify-between my-6"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>
             Lokasyonlar
@@ -151,7 +185,9 @@ export const LocationsList = () => {
         <LocationFilters dispatchFilters={dispatchFilters}/>
       </div>
 
-      {filteredData && <LocationsTable data={filteredData}/>}
+      <Token/>
+
+      {filteredData && <LocationsTable data={filteredData} refresh={refresh}/>}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
