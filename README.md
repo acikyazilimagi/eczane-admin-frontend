@@ -5,7 +5,7 @@
 Build: `docker build -t eczane-admin-panel .`
 
 Run: `docker compose up -d`
-Run: `docker run -d --rm -p 5173:5173 --name eczane-admin eczane-admin-panel:latest`
+Run: `docker run -d --rm -p 5173:80 --name eczane-admin eczane-admin-panel:latest`
 
 
 GitHub ci/cd action is running. 
