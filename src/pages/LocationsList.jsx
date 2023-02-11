@@ -1,11 +1,11 @@
 import { useReducer, useState } from "react";
-
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
 import { LocationAdd } from "../components/LocationAdd.jsx";
 import { LocationsEdit } from "../components/LocationEdit.jsx";
 import cityData from "./../datasets/cityData.json";
+
 
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
@@ -132,7 +132,7 @@ export const LocationsList = () => {
   const [filters, dispatchFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }), {});
 
-  const { get, data, loading, error } = useFetch("/", {}, []);
+  const { data, loading } = useFetch("/", {}, []);
 
 
   const cityFilteredData = data?.data?.filter(item => !filters.city || item.cityId === filters.city)
@@ -140,11 +140,6 @@ export const LocationsList = () => {
   const districtFilteredData = cityFilteredData?.filter(
     item => !filters.district || item.districtId === filters.district
   )
-  
-  const refresh = async () => {
-    const refreshResult = await get("?" + Date.now());
-    console.log({ refreshResult });
-  };
 
   console.log(data)
 
@@ -164,7 +159,7 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {districtFilteredData && <LocationsTable data={districtFilteredData} refresh={refresh}/>}
+      {districtFilteredData && <LocationsTable data={districtFilteredData} />}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
