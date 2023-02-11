@@ -1,13 +1,10 @@
 import { useReducer, useState } from "react";
-
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
 import { LocationAdd } from "../components/LocationAdd.jsx";
 import { LocationsEdit } from "../components/LocationEdit.jsx";
 import cityData from "./../datasets/cityData.json";
-
-
 
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>);
