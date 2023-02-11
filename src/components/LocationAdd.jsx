@@ -6,6 +6,7 @@ import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
+import { getDateQuery } from "../utils.js";
 
 export function LocationAdd () {
   const { data, post, response, loading, get } = useFetch("/");
@@ -16,7 +17,20 @@ export function LocationAdd () {
     setIsOpen((prevState) => !prevState);
   };
 
-  const [formData, setFormData] = useState({});
+  const initialFormData = {
+    name: "",
+    phone: "",
+    address: "",
+    addressDetails: "",
+    latitude: "",
+    longitude: "",
+    cityId: null,
+    districtId: null,
+    typeId: null,
+    subTypeId: null,
+  }
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -49,8 +63,10 @@ export function LocationAdd () {
       if (newLocation.ok) {
         console.log("New location added")
 
+        setFormData(initialFormData)
+
         setTimeout(() => {
-          get(getDateQuery)
+          get(getDateQuery())
           toggleDrawer()
         }, 300)
       }
@@ -164,7 +180,7 @@ export function LocationAdd () {
             <Select name={"typeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Tip
+                Lütfen seçiniz
               </option>
               {
                 typeOptions.map((item) => (
@@ -180,7 +196,7 @@ export function LocationAdd () {
             <Select name={"subTypeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Alt Tip
+                Lütfen seçiniz
               </option>
               {
                 formData.typeId &&
