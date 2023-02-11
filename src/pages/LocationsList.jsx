@@ -145,6 +145,8 @@ export const LocationsList = () => {
 
   console.log(data)
 
+  const sortedData = districtFilteredData?.sort((a, b) => a.id - b.id);
+
   return (
     <div className={"container"}>
       <div className={"flex justify-between my-6 flex-col md:flex-row"}>
@@ -161,11 +163,11 @@ export const LocationsList = () => {
 
       <Token/>
 
-      {districtFilteredData && <LocationsTable data={districtFilteredData} />}
+      {sortedData && <LocationsTable data={sortedData} />}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
-        {districtFilteredData && districtFilteredData.length} kayıt bulundu.
+        {sortedData && sortedData.length} kayıt bulundu.
       </div>
     </div>
   );
