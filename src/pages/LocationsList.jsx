@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react";
+
 import "react-modern-drawer/dist/index.css";
 import { useFetch } from "use-http";
 import { Input } from "../components/Input.jsx";
@@ -69,7 +70,7 @@ export const LocationFilters = ({ dispatchFilters }) => {
   const [district, setDistrict] = useState(null);
 
   return (
-    <div className={"flex gap-4 basis-1/3"}>
+    <div className={"flex gap-4 basis-1/3 my-4 md:my-0"}>
       <div className="flex bg-gray-100 w-full">
         <select className="bg-gray-100 p-4 font-bold w-full" id="city"
                 onChange={(e) => {
@@ -149,7 +150,7 @@ export const LocationsList = () => {
 
   return (
     <div className={"container"}>
-      <div className={"flex justify-between my-6"}>
+      <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>
             Lokasyonlar
