@@ -2,13 +2,14 @@ import { useState } from "react";
 import Drawer from "react-modern-drawer";
 import { useFetch } from "use-http";
 import cityData from "../datasets/cityData.json";
+import { getDateQuery } from "../utils";
 import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
 
-export function LocationsEdit ({ item, refresh }) {
-  const { data, post, response, loading } = useFetch("");
+export function LocationsEdit ({ item }) {
+  const { data, post, response, loading, get } = useFetch("");
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
@@ -81,7 +82,7 @@ export function LocationsEdit ({ item, refresh }) {
         console.log("Updated");
 
         setTimeout(() => {
-          refresh();
+          get(getDateQuery);
           toggleDrawer();
         }, 300);
       }

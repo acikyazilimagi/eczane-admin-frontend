@@ -7,8 +7,8 @@ import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
 
-export function LocationAdd ({refresh}) {
-  const { data, post, response, loading } = useFetch("/");
+export function LocationAdd () {
+  const { data, post, response, loading, get } = useFetch("/");
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -50,7 +50,7 @@ export function LocationAdd ({refresh}) {
         console.log("New location added")
 
         setTimeout(() => {
-          refresh()
+          get(getDateQuery)
           toggleDrawer()
         }, 300)
       }
