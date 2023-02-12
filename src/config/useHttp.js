@@ -1,7 +1,7 @@
 export const useHTTPOptions = {
   responseType: "json",
-  url: "https://eczaneapi.afetharita.com/api",
-  // url: 'http://localhost:8080/api',
+  // url: "https://eczaneapi.afetharita.com/api",
+  url: 'http://localhost:8080/api',
   interceptors: {
     // every time we make an http request, this will run 1st before the request is made
     // url, path and route are supplied to the interceptor
