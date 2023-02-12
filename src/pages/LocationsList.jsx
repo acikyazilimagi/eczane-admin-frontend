@@ -15,7 +15,8 @@ const LocationsTableCell = ({ children }) => (
 );
 
 function LocationsTableRow({ item }) {
-  const { id, name, address, phone, additionalAddressDetails, type } = item;
+  const { id, name, address, phone, additionalAddressDetails, type, source, isValidated } = item;
+
   const { delete: deleteLocation, get } = useFetch("");
 
   async function handleDelete() {
@@ -29,7 +30,7 @@ function LocationsTableRow({ item }) {
   }
 
   const LocationActions = () => (
-    <div className={"flex gap-12"}>
+    <div className={"flex gap-8"}>
       <LocationsEdit item={item} />
       <button className={"text-red-500"} onClick={handleDelete}>
         Sil
@@ -49,6 +50,8 @@ function LocationsTableRow({ item }) {
       <LocationsTableCell>{address}</LocationsTableCell>
       <LocationsTableCell>{additionalAddressDetails}</LocationsTableCell>
       <LocationsTableCell>{phone}</LocationsTableCell>
+      <LocationsTableCell>{source}</LocationsTableCell>
+      <LocationsTableCell>{isValidated}</LocationsTableCell>
       <LocationsTableCell>
         <LocationActions />
       </LocationsTableCell>
@@ -60,7 +63,7 @@ function LocationsTable({ data }) {
   return (
     <div className={"relative overflow-x-auto shadow-sm sm:rounded-lg"}>
       <table className="w-full text-sm text-left ">
-        <thead className={"text-sm text-gray-700 uppercase bg-gray-50"}>
+        <thead className={"text-sm text-gray-700 uppercase bg-gray-50 sticky"}>
           <tr>
             <LocationsTableHeaderCell>ID</LocationsTableHeaderCell>
             <LocationsTableHeaderCell>Tipi</LocationsTableHeaderCell>
@@ -68,6 +71,8 @@ function LocationsTable({ data }) {
             <LocationsTableHeaderCell>Açık Adres</LocationsTableHeaderCell>
             <LocationsTableHeaderCell>Adres Tarifi</LocationsTableHeaderCell>
             <LocationsTableHeaderCell>Telefon</LocationsTableHeaderCell>
+            <LocationsTableHeaderCell>Kaynak</LocationsTableHeaderCell>
+            <LocationsTableHeaderCell>Doğrulandı mı</LocationsTableHeaderCell>
             <LocationsTableHeaderCell>Aksiyonlar</LocationsTableHeaderCell>
           </tr>
         </thead>
