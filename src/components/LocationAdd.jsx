@@ -6,10 +6,9 @@ import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
-import { getDateQuery } from "../utils.js";
 
-export function LocationAdd () {
-  const { data, post, response, loading, get } = useFetch("/");
+export function LocationAdd ({refresh}) {
+  const { data, post, response, loading, get } = useFetch("/location");
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,6 +25,7 @@ export function LocationAdd () {
     phone: "",
     address: "",
     addressDetails: "",
+    code: "",
     latitude: "",
     longitude: "",
     cityId: null,
@@ -61,18 +61,20 @@ export function LocationAdd () {
   };
 
   async function addLocation() {
+    formData.isValidated = Boolean(formData.isValidated)
+
     const newLocation = await post({
-      location: { ...formData, code: 'TEST' }
+       ...formData
     })
 
     if (response.ok) {
-      if (newLocation.ok) {
+      if (newLocation.data) {
         console.log("New location added")
 
         setFormData(initialFormData)
 
         setTimeout(() => {
-          get(getDateQuery())
+          refresh()
           toggleDrawer()
         }, 300)
       }
@@ -128,6 +130,14 @@ export function LocationAdd () {
                    value={formData.addressDetails}
                    onChange={handleInputChange}/>
           </div>
+
+          <div>
+            <Label htmlFor="code">Kurum kodu:</Label>
+            <Input type="text" id="code" name="code"
+                   value={formData.code}
+                   onChange={handleInputChange}/>
+          </div>
+
           <div>
             <Label htmlFor="cityId">Şehir:</Label>
 

@@ -10,15 +10,24 @@ import { getDateQuery } from "../utils.js";
 const LocationsTableHeaderCell = ({ children }) => (
   <th className={"px-6 py-4"}>{children}</th>
 );
-const LocationsTableCell = ({ children }) => (
-  <td className={"px-6 py-4"}>{children}</td>
+const LocationsTableCell = ({ className, children }) => (
+  <td className={"px-6 py-4 " + className}>{children}</td>
 );
 
-function LocationsTableRow({ item }) {
-  const { id, name, address, phone, additionalAddressDetails, type, source, isValidated } = item;
+function LocationsTableRow ({ item }) {
+  const {
+    id,
+    name,
+    address,
+    phone,
+    additionalAddressDetails,
+    type,
+    source,
+    isValidated,
+  } = item;
   const { delete: deleteLocation, get } = useFetch("");
 
-  async function handleDelete() {
+  async function handleDelete () {
     const areYouSure = confirm("Silmek istediğinize emin misiniz?");
     if (areYouSure) {
       await deleteLocation(`location/${id}`);
@@ -30,7 +39,7 @@ function LocationsTableRow({ item }) {
 
   const LocationActions = () => (
     <div className={"flex gap-8"}>
-      <LocationsEdit item={item} />
+      <LocationsEdit item={item}/>
       <button className={"text-red-500"} onClick={handleDelete}>
         Sil
       </button>
@@ -49,36 +58,37 @@ function LocationsTableRow({ item }) {
       <LocationsTableCell>{address}</LocationsTableCell>
       <LocationsTableCell>{additionalAddressDetails}</LocationsTableCell>
       <LocationsTableCell>{phone}</LocationsTableCell>
-      <LocationsTableCell>{source}</LocationsTableCell>
-      <LocationsTableCell>{isValidated}</LocationsTableCell>
+      <LocationsTableCell className={"w-[10rem] break-all"}
+                          alt={source}>{source}</LocationsTableCell>
+      <LocationsTableCell>{isValidated ? "EVET" : "HAYIR"}</LocationsTableCell>
       <LocationsTableCell>
-        <LocationActions />
+        <LocationActions/>
       </LocationsTableCell>
     </tr>
   );
 }
 
-function LocationsTable({ data }) {
+function LocationsTable ({ data }) {
   return (
     <div className={"relative overflow-x-auto shadow-sm sm:rounded-lg"}>
       <table className="w-full text-sm text-left ">
         <thead className={"text-sm text-gray-700 uppercase bg-gray-50 sticky"}>
-          <tr>
-            <LocationsTableHeaderCell>ID</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Tipi</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Ad</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Açık Adres</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Adres Tarifi</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Telefon</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Kaynak</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Doğrulandı mı</LocationsTableHeaderCell>
-            <LocationsTableHeaderCell>Aksiyonlar</LocationsTableHeaderCell>
-          </tr>
+        <tr>
+          <LocationsTableHeaderCell>ID</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Tipi</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Ad</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Açık Adres</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Adres Tarifi</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Telefon</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Kaynak</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Doğrulandı mı</LocationsTableHeaderCell>
+          <LocationsTableHeaderCell>Aksiyonlar</LocationsTableHeaderCell>
+        </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
-            <LocationsTableRow item={item} key={item.id} />
-          ))}
+        {data.map((item) => (
+          <LocationsTableRow item={item} key={item.id}/>
+        ))}
         </tbody>
       </table>
     </div>
@@ -113,9 +123,9 @@ export const LocationFilters = ({ dispatchFilters }) => {
             data.data &&
             data.data.map((item) => (
               <option
-                value={item.name}
+                value={item.id}
                 key={item.id}
-                selected={type === item.name}
+                selected={type === item.id}
               >
                 {item.name}
               </option>
@@ -158,9 +168,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
             İlçe
           </option>
           {city &&
-            cityData
-              .find((item) => item.id === city)
-              ?.districts.map((item) => (
+            cityData.find((item) => item.id === city)?.
+              districts.map((item) => (
                 <option
                   value={item.id}
                   key={item.id}
@@ -175,7 +184,7 @@ export const LocationFilters = ({ dispatchFilters }) => {
   );
 };
 
-function Token() {
+function Token () {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   return (
@@ -204,25 +213,28 @@ function Token() {
 export const LocationsList = () => {
   const [filters, dispatchFilters] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    {}
+    {},
   );
 
-  const { data, loading } = useFetch("/", {}, []);
-  console.log(filters);
+  const { get, data, loading } = useFetch("/locations/admin", {}, []);
+
+  const refresh = () => {
+    get(getDateQuery());
+  };
 
   const typeFilteredData = data?.data?.filter(
-    (item) => !filters.type || item.type === filters.type
+    (item) => !filters.type || Number(item.typeId) === Number(filters.type),
   );
 
   const cityFilteredData = typeFilteredData?.filter(
-    (item) => !filters.city || item.cityId === filters.city
+    (item) => !filters.city || item.cityId === filters.city,
   );
 
   const districtFilteredData = cityFilteredData?.filter(
-    (item) => !filters.district || item.districtId === filters.district
+    (item) => !filters.district || item.districtId === filters.district,
   );
 
-  const sortedData = districtFilteredData?.sort((a, b) => a.id - b.id);
+  const sortedData = districtFilteredData?.sort((a, b) => b.id - a.id);
 
   return (
     <div className={"container"}>
@@ -230,15 +242,15 @@ export const LocationsList = () => {
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>Lokasyonlar</h1>
 
-          <LocationAdd />
+          <LocationAdd refresh={refresh}/>
         </div>
 
-        <LocationFilters dispatchFilters={dispatchFilters} />
+        <LocationFilters dispatchFilters={dispatchFilters}/>
       </div>
 
-      <Token />
+      <Token/>
 
-      {sortedData && <LocationsTable data={sortedData} />}
+      {sortedData && <LocationsTable data={sortedData}/>}
       {loading && <div>Loading...</div>}
 
       <div className={"w-full flex justify-center my-8 p-2"}>
