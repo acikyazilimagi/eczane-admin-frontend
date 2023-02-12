@@ -63,9 +63,11 @@ export function LocationsEdit ({ item }) {
       "subTypeId",
       "latitude",
       "longitude",
+      "source",
+      "isValidated"
     ];
 
-    if (!(formData.typeId && formData.subTypeId && formData.cityId && formData.districtId)) {
+    if (!(formData.typeId && formData.subTypeId && formData.cityId && formData.districtId && formData.source?.length > 0)) {
       alert ('Lütfen tüm alanları doldurunuz')
       return
     }
@@ -225,6 +227,31 @@ export function LocationsEdit ({ item }) {
               }
             </Select>
           </div>
+          <div>
+            <Label htmlFor="source">Kaynak:</Label>
+            <Input type="text" id="source" name="source"
+                   value={formData.source} onChange={handleInputChange}/>
+          </div>
+
+          <div>
+            <Label htmlFor="isValidated">Doğrulandı mı?</Label>
+            <Select name={"isValidated"}
+                    onChange={handleInputChange}>
+              <option value="" selected={formData.isValidated === null}>
+                Lütfen seçiniz
+              </option>
+              {
+                [{ id: true, name: "Evet" }, { id: false, name: "Hayır" }]
+                .map((item) => (
+                  <option value={item.id} key={item.id}
+                          selected={formData.isValidated === item.id}>
+                    {item.name}
+                  </option>
+                ))
+              }
+            </Select>
+          </div>
+
           <button type="submit"
                   className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"}>
             Güncelle
