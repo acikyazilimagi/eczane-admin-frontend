@@ -42,7 +42,7 @@ export function LocationsEdit ({ item }) {
       return;
     }
 
-    if (name === "additionalAddressDetails") {
+    if (name === "addressDetails") {
       setFormData({ ...formData, [name]: value, addressDetails: value });
       return;
     }
@@ -56,7 +56,7 @@ export function LocationsEdit ({ item }) {
       "name",
       "phone",
       "address",
-      "additionalAddressDetails",
+      "addressDetails",
       "cityId",
       "districtId",
       "typeId",
@@ -112,7 +112,6 @@ export function LocationsEdit ({ item }) {
         <div className={"flex justify-between px-8 my-8"}>
           <h2 className={"text-2xl font-bold"}>Lokasyon Düzenle</h2>
         </div>
-
         <form onSubmit={handleSubmit} className={"px-8"}>
           <div>
             <Label htmlFor="name">Ad: </Label>
@@ -130,10 +129,9 @@ export function LocationsEdit ({ item }) {
                    value={formData.address} onChange={handleInputChange}/>
           </div>
           <div>
-            <Label htmlFor="additionalAddressDetails">Adres Tarifi:</Label>
-            <Input type="text" id="additionalAddressDetails"
-                   name="additionalAddressDetails"
-                   value={formData.additionalAddressDetails}
+            <Label htmlFor="addressDetails">Adres Tarifi:</Label>
+            <Input type="text" id="addressDetails" name="addressDetails"
+                   value={formData.addressDetails}
                    onChange={handleInputChange}/>
           </div>
           <div>
@@ -194,7 +192,7 @@ export function LocationsEdit ({ item }) {
             <Select name={"typeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Lütfen Seçiniz
+                Lütfen seçiniz
               </option>
               {
                 typeOptions.map((item) => (
@@ -210,7 +208,7 @@ export function LocationsEdit ({ item }) {
             <Select name={"subTypeId"}
                     onChange={handleInputChange}>
               <option value="" selected={formData.type === null}>
-                Lütfen Seçiniz
+                Lütfen seçiniz
               </option>
               {
                 formData.typeId &&
@@ -225,14 +223,18 @@ export function LocationsEdit ({ item }) {
               }
             </Select>
           </div>
+
           <button type="submit"
                   className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"}>
-            Güncelle
+            Gönder
           </button>
-          {loading && <p>Güncelleniyor...</p>}
+
           {
-            response?.ok && data?.ok &&
-            <div className={"mt-4 text-lg"}>Güncelleme başarılı</div>
+            loading && <div className={"mt-4"}>Kaydediliyor...</div>
+          }
+
+          {
+            response?.ok && data?.ok && <div className={"mt-4 text-lg"}>Kayıt başarılı</div>
           }
         </form>
       </Drawer>
