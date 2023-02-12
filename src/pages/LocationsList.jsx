@@ -22,6 +22,8 @@ function LocationsTableRow({ item }) {
     const areYouSure = confirm("Silmek istediğinize emin misiniz?");
     if (areYouSure) {
       await deleteLocation(`location/${id}`);
+      // TODO: Sayfa yerine sadece data yenilenecek. Ortak bir state'e bağlamak gerekebilir.
+      window.location.reload();
       get(getDateQuery);
     }
   }
