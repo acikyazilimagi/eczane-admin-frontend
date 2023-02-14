@@ -242,8 +242,9 @@ export function LocationAdd ({refresh}) {
                 Lütfen seçiniz
               </option>
               {
-                [{ id: "true", name: "Evet" }, { id: "false", name: "Hayır" }]
-                .map((item) => (
+                [{ id: true, name: "Evet" }, { id: false, name: "Hayır" }]
+                  .map((item) =>
+                  (
                     <option value={item.id} key={item.id}
                             selected={formData.isValidated === item.id}>
                       {item.name}
