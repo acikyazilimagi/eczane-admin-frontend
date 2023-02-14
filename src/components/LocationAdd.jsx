@@ -3,9 +3,8 @@ import { useFetch } from "use-http";
 
 import { LocationSet } from "./LocationSet";
 
-export function LocationAdd({ item, refresh }) {
+export function LocationAdd({ refresh }) {
   const { response, post } = useFetch("/location");
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -16,7 +15,23 @@ export function LocationAdd({ item, refresh }) {
     setIsOpen((prevState) => !prevState);
   };
 
-  const [_, setFormData] = useState(item);
+  const initialLocation = {
+    name: "",
+    phone: "",
+    address: "",
+    addressDetails: "",
+    code: "",
+    latitude: "",
+    longitude: "",
+    cityId: null,
+    districtId: null,
+    typeId: null,
+    subTypeId: null,
+    source: null,
+    isValidated: null,
+  };
+
+  const [item, setItem] = useState(initialLocation);
 
   const getDataAfterInputChange = (formData, name, value) => {
     if (name === "cityId") {
@@ -43,7 +58,7 @@ export function LocationAdd({ item, refresh }) {
       if (newLocation.data) {
         console.log("New location added");
 
-        setFormData(item);
+        setItem(initialLocation);
 
         setTimeout(() => {
           refresh();

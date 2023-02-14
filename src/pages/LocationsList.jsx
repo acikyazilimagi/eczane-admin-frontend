@@ -225,22 +225,6 @@ export const LocationsList = () => {
   const refresh = () => {
     get(getDateQuery);
   };
-  
-  const initialLocation = {
-    name: "",
-    phone: "",
-    address: "",
-    addressDetails: "",
-    code: "",
-    latitude: "",
-    longitude: "",
-    cityId: null,
-    districtId: null,
-    typeId: null,
-    subTypeId: null,
-    source: null,
-    isValidated: null,
-  };
 
   const typeFilteredData = data?.data?.filter(
     (item) => !filters.type || Number(item.typeId) === Number(filters.type),
@@ -261,7 +245,7 @@ export const LocationsList = () => {
       <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>Lokasyonlar</h1>
-          <LocationAdd item={initialLocation} refresh={refresh}/>
+          <LocationAdd refresh={refresh}/>
         </div>
 
         <LocationFilters dispatchFilters={dispatchFilters}/>
