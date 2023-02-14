@@ -107,7 +107,6 @@ export function LocationAdd ({refresh}) {
         <div className={"flex justify-between px-8 my-8"}>
           <h2 className={"text-2xl font-bold"}>Yeni Lokasyon</h2>
         </div>
-
         <form onSubmit={handleSubmit} className={"px-8"}>
           <div>
             <Label htmlFor="name">Ad: </Label>
@@ -130,14 +129,12 @@ export function LocationAdd ({refresh}) {
                    value={formData.addressDetails}
                    onChange={handleInputChange}/>
           </div>
-
           <div>
             <Label htmlFor="code">Kurum kodu:</Label>
             <Input type="text" id="code" name="code"
                    value={formData.code}
                    onChange={handleInputChange}/>
           </div>
-
           <div>
             <Label htmlFor="cityId">Şehir:</Label>
 
@@ -227,7 +224,6 @@ export function LocationAdd ({refresh}) {
               }
             </Select>
           </div>
-
           <div>
             <Label htmlFor="source">Kaynak:</Label>
             <Input type="text" id="source" name="source"
