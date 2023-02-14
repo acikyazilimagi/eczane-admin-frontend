@@ -9,7 +9,7 @@ import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
 
 export function LocationsEdit ({ item }) {
-  const { data, post, response, loading, get } = useFetch("");
+  const { data, put, response, loading, get } = useFetch("");
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => {
@@ -63,23 +63,32 @@ export function LocationsEdit ({ item }) {
       "subTypeId",
       "latitude",
       "longitude",
+      "source",
+      "isValidated",
+      "code"
     ];
 
-    if (!(formData.typeId && formData.subTypeId && formData.cityId && formData.districtId)) {
-      alert ('Lütfen tüm alanları doldurunuz')
-      return
+    if (!(formData.typeId && formData.subTypeId && formData.cityId &&
+      formData.districtId && formData.source?.length > 0)) {
+      alert("Lütfen tüm alanları doldurunuz");
+      return;
     }
+
+    formData.isValidated = Boolean(formData.isValidated)
 
     let filteredFormData = Object.entries(formData).
       filter(([key, value]) => fields.includes(key));
 
-    const updateLocationResponse = await post(`/location/${item.id}`,
-      { location: Object.fromEntries(filteredFormData) });
+    const updateLocationResponse = await put(`/location/${item.id}`,
+      Object.fromEntries(filteredFormData),
+    );
     console.log({ response, updateLocationResponse });
 
     if (response.ok) {
-      if (updateLocationResponse.ok) {
+      if (updateLocationResponse.data) {
         console.log("Updated");
+
+        window.location.reload()
 
         setTimeout(() => {
           get(getDateQuery);
@@ -132,6 +141,12 @@ export function LocationsEdit ({ item }) {
             <Label htmlFor="addressDetails">Adres Tarifi:</Label>
             <Input type="text" id="addressDetails" name="addressDetails"
                    value={formData.addressDetails}
+                   onChange={handleInputChange}/>
+          </div>
+          <div>
+            <Label htmlFor="code">Kurum kodu:</Label>
+            <Input type="text" id="code" name="code"
+                   value={formData.code}
                    onChange={handleInputChange}/>
           </div>
           <div>
@@ -223,6 +238,31 @@ export function LocationsEdit ({ item }) {
               }
             </Select>
           </div>
+          <div>
+            <Label htmlFor="source">Kaynak:</Label>
+            <Input type="text" id="source" name="source"
+                   value={formData.source} onChange={handleInputChange}/>
+          </div>
+
+          <div>
+            <Label htmlFor="isValidated">Doğrulandı mı?</Label>
+            <Select name={"isValidated"}
+                    onChange={handleInputChange}>
+              <option value="" selected={formData.isValidated === null}>
+                Lütfen seçiniz
+              </option>
+              {
+                [{ id: true, name: "Evet" }, { id: false, name: "Hayır" }].map(
+                  (item) => (
+                    <option value={item.id} key={item.id}
+                            selected={formData.isValidated === item.id}>
+                      {item.name}
+                    </option>
+                  ))
+              }
+            </Select>
+          </div>
+
 
           <button type="submit"
                   className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"}>

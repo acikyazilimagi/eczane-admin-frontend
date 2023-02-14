@@ -6,14 +6,17 @@ import { Input } from "./Input.jsx";
 import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
-import { getDateQuery } from "../utils.js";
 
-export function LocationAdd () {
-  const { data, post, response, loading, get } = useFetch("/");
+export function LocationAdd ({refresh}) {
+  const { data, post, response, loading, get } = useFetch("/location");
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => {
+    if (localStorage.getItem("token") === null) {
+      alert("Token gerekli")
+      return
+    }
     setIsOpen((prevState) => !prevState);
   };
 
@@ -22,12 +25,15 @@ export function LocationAdd () {
     phone: "",
     address: "",
     addressDetails: "",
+    code: "",
     latitude: "",
     longitude: "",
     cityId: null,
     districtId: null,
     typeId: null,
     subTypeId: null,
+    source: null,
+    isValidated: null
   }
 
   const [formData, setFormData] = useState(initialFormData);
@@ -55,18 +61,20 @@ export function LocationAdd () {
   };
 
   async function addLocation() {
+    formData.isValidated = Boolean(formData.isValidated)
+
     const newLocation = await post({
-      location: { ...formData, code: 'TEST' }
+       ...formData
     })
 
     if (response.ok) {
-      if (newLocation.ok) {
+      if (newLocation.data) {
         console.log("New location added")
 
         setFormData(initialFormData)
 
         setTimeout(() => {
-          get(getDateQuery())
+          refresh()
           toggleDrawer()
         }, 300)
       }
@@ -122,6 +130,14 @@ export function LocationAdd () {
                    value={formData.addressDetails}
                    onChange={handleInputChange}/>
           </div>
+
+          <div>
+            <Label htmlFor="code">Kurum kodu:</Label>
+            <Input type="text" id="code" name="code"
+                   value={formData.code}
+                   onChange={handleInputChange}/>
+          </div>
+
           <div>
             <Label htmlFor="cityId">Şehir:</Label>
 
@@ -205,6 +221,31 @@ export function LocationAdd () {
                   map((item) => (
                     <option value={item.id} key={item.id}
                             selected={formData.subTypeId === item.id}>
+                      {item.name}
+                    </option>
+                  ))
+              }
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="source">Kaynak:</Label>
+            <Input type="text" id="source" name="source"
+                   value={formData.source} onChange={handleInputChange}/>
+          </div>
+
+          <div>
+            <Label htmlFor="isValidated">Doğrulandı mı?</Label>
+            <Select name={"isValidated"}
+                    onChange={handleInputChange}>
+              <option value="" selected={formData.isValidated === null}>
+                Lütfen seçiniz
+              </option>
+              {
+                [{ id: "true", name: "Evet" }, { id: "false", name: "Hayır" }]
+                .map((item) => (
+                    <option value={item.id} key={item.id}
+                            selected={formData.isValidated === item.id}>
                       {item.name}
                     </option>
                   ))
