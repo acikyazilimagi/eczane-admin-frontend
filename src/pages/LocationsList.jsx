@@ -27,19 +27,23 @@ function LocationsTableRow ({ item }) {
   } = item;
   const { delete: deleteLocation, get } = useFetch("");
 
+  const refresh = () => {
+    get(getDateQuery);
+  };
+
   async function handleDelete () {
     const areYouSure = confirm("Silmek istediğinize emin misiniz?");
     if (areYouSure) {
       await deleteLocation(`location/${id}`);
       // TODO: Sayfa yerine sadece data yenilenecek. Ortak bir state'e bağlamak gerekebilir.
       window.location.reload();
-      get(getDateQuery);
+      refresh();
     }
   }
 
   const LocationActions = () => (
     <div className={"flex gap-8"}>
-      <LocationsEdit item={item}/>
+      <LocationsEdit item={item} refresh={refresh}/>
       <button className={"text-red-500"} onClick={handleDelete}>
         Sil
       </button>
@@ -219,7 +223,7 @@ export const LocationsList = () => {
   const { get, data, loading } = useFetch("/locations/admin", {}, []);
 
   const refresh = () => {
-    get(getDateQuery());
+    get(getDateQuery);
   };
 
   const typeFilteredData = data?.data?.filter(
@@ -240,8 +244,7 @@ export const LocationsList = () => {
     <div className={"container"}>
       <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
-          <h1 className={"text-3xl text-bold"}>Lokasyonlar</h1>
-
+          <h1 className={"text-3xl text-bold"}>Konumlar</h1>
           <LocationAdd refresh={refresh}/>
         </div>
 
