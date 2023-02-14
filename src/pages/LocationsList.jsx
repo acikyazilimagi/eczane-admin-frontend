@@ -261,7 +261,6 @@ export const LocationsList = () => {
       <div className={"flex justify-between my-6 flex-col md:flex-row"}>
         <div className="flex items-center justify-center">
           <h1 className={"text-3xl text-bold"}>Lokasyonlar</h1>
-
           <LocationAdd item={initialLocation} refresh={refresh}/>
         </div>
 
