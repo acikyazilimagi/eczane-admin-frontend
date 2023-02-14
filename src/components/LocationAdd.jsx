@@ -7,8 +7,8 @@ import { Label } from "./Label.jsx";
 import { Select } from "./Select.jsx";
 import { subTypeOptions, typeOptions } from "./TypeOptions.jsx";
 
-export function LocationAdd ({refresh}) {
-  const { data, post, response, loading, get } = useFetch("/location");
+export function LocationAdd ({ item, refresh }) {
+  const { data, response, loading, post } = useFetch("/location");
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -20,23 +20,7 @@ export function LocationAdd ({refresh}) {
     setIsOpen((prevState) => !prevState);
   };
 
-  const initialFormData = {
-    name: "",
-    phone: "",
-    address: "",
-    addressDetails: "",
-    code: "",
-    latitude: "",
-    longitude: "",
-    cityId: null,
-    districtId: null,
-    typeId: null,
-    subTypeId: null,
-    source: null,
-    isValidated: null
-  }
-
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(item);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -71,7 +55,7 @@ export function LocationAdd ({refresh}) {
       if (newLocation.data) {
         console.log("New location added")
 
-        setFormData(initialFormData)
+        setFormData(item)
 
         setTimeout(() => {
           refresh()
