@@ -121,7 +121,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
           </option>
           {data &&
             data.data &&
-            data.data.map((item) => (
+            data.data.sort(function(a,b){
+              return a.name > b.name;}).map((item) => (
               <option
                 value={item.id}
                 key={item.id}
@@ -148,7 +149,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
           <option value="" selected={city === null}>
             Şehir
           </option>
-          {cityData.map((item) => (
+          {cityData.sort(function(a,b){
+  return a.key > b.key;}).map((item) => (
             <option value={item.id} key={item.id} selected={city === item.id}>
               {item.key}
             </option>
@@ -169,7 +171,8 @@ export const LocationFilters = ({ dispatchFilters }) => {
           </option>
           {city &&
             cityData.find((item) => item.id === city)?.
-              districts.map((item) => (
+              districts.sort(function(a,b){
+                return a.key > b.key;}).map((item) => (
                 <option
                   value={item.id}
                   key={item.id}
