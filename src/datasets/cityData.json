@@ -2,6 +2,8 @@
   {
     "id": 1,
     "key": "Adana",
+    "lat": "37.00801",
+    "long": "35.33281",
     "districts": [
       { "id": 1, "key": "Yüreğir" },
       { "id": 2, "key": "Yumurtalık" },
@@ -23,6 +25,8 @@
   {
     "id": 2,
     "key": "Adıyaman",
+    "lat": "37.764542",
+    "long": "38.276451",
     "districts": [
       { "id": 16, "key": "Tut" },
       { "id": 17, "key": "Sincik" },
@@ -38,6 +42,8 @@
   {
     "id": 21,
     "key": "Diyarbakır",
+    "lat": "37.916248",
+    "long": "40.225590",
     "districts": [
       { "id": 261, "key": "Yenişehir" },
       { "id": 262, "key": "Sur" },
@@ -61,6 +67,8 @@
   {
     "id": 27,
     "key": "Gaziantep",
+    "lat": "37.065842",
+    "long": "37.376080",
     "districts": [
       { "id": 338, "key": "Yavuzeli" },
       { "id": 339, "key": "Şehitkamil" },
@@ -76,6 +84,8 @@
   {
     "id": 31,
     "key": "Hatay",
+    "lat": "36.202736",
+    "long": "36.16031",
     "districts": [
       { "id": 374, "key": "Yayladağı" },
       { "id": 375, "key": "Samandağ" },
@@ -97,6 +107,8 @@
   {
     "id": 44,
     "key": "Malatya",
+    "lat": "38.3477067",
+    "long": "38.2943099",
     "districts": [
       { "id": 599, "key": "Yeşilyurt" },
       { "id": 600, "key": "Yazıhan" },
@@ -116,6 +128,8 @@
   {
     "id": 46,
     "key": "Kahramanmaraş",
+    "lat": "37.5767418",
+    "long": "36.926527",
     "districts": [
       { "id": 629, "key": "Türkoğlu" },
       { "id": 630, "key": "Pazarcık" },
@@ -133,6 +147,8 @@
   {
     "id": 63,
     "key": "Şanlıurfa",
+    "lat": "37.1606037",
+    "long": "38.8004359",
     "districts": [
       { "id": 827, "key": "Viranşehir" },
       { "id": 828, "key": "Suruç" },
@@ -152,6 +168,8 @@
   {
     "id": 79,
     "key": "Kilis",
+    "lat": "36.7155317",
+    "long": "37.1136492",
     "districts": [
       { "id": 944, "key": "Polateli" },
       { "id": 945, "key": "Musabeyli" },
@@ -162,6 +180,8 @@
   {
     "id": 80,
     "key": "Osmaniye",
+    "lat": "37.0670071",
+    "long": "36.2323057",
     "districts": [
       { "id": 948, "key": "Toprakkale" },
       { "id": 949, "key": "Sumbas" },
