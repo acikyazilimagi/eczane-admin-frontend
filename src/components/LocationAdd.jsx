@@ -6,6 +6,7 @@ import { Input } from './Input.jsx';
 import { Label } from './Label.jsx';
 import { Select } from './Select.jsx';
 import { subTypeOptions, typeOptions } from './TypeOptions.jsx';
+import { verifyLatLong } from '../utils';
 
 export function LocationAdd({ refresh }) {
   const { data, post, response, loading, get } = useFetch('/location');
@@ -64,8 +65,11 @@ export function LocationAdd({ refresh }) {
       ...formData,
     });
 
+    
+    let selectedCityData = cityData.find(o => o.id === formData.cityId);
+    let verifyLocation = verifyLatLong(selectedCityData.lat, selectedCityData.long, formData.latitude, formData.longitude, 10);
     if (response.ok) {
-      if (newLocation.data) {
+      if (newLocation.data && verifyLocation) {
         console.log('New location added');
 
         setFormData(initialFormData);
